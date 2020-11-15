@@ -4,19 +4,15 @@ import { doFetch } from "..";
 import { wrapHandler } from "../wrapHandler";
 
 test("mocks", async () => {
-  const handler = jest.fn((_req, res, ctx) =>
+  const { handler, requested } = wrapHandler((_req, res, ctx) =>
     res(ctx.status(200), ctx.json({ message: "ok" }))
   );
 
-  const wrappedHandler = jest.fn((_req, res, ctx) =>
-    wrapHandler(handler)(_req, res, ctx)
-  );
-
-  server.use(rest.get(/example\.com/, wrappedHandler));
+  server.use(rest.get(/example\.com/, handler));
 
   await doFetch();
 
-  expect(handler).toHaveBeenCalledWith(
+  expect(requested).toHaveBeenCalledWith(
     expect.objectContaining({
       searchParams: {
         myParam: "two",
@@ -29,7 +25,7 @@ test("mocks", async () => {
     expect.anything()
   );
 
-  expect(wrappedHandler.mock.results[0].value).resolves.toMatchObject({
+  expect(await handler.mock.results[0].value).toMatchObject({
     status: 200,
     bodyParsed: {
       message: "ok",
@@ -38,15 +34,15 @@ test("mocks", async () => {
 });
 
 test("pairs (for duplicate keys)", async () => {
-  const handler = jest.fn((_req, res, ctx) =>
+  const { handler, requested } = wrapHandler((_req, res, ctx) =>
     res(ctx.status(200), ctx.json({ message: "ok" }))
   );
 
-  server.use(rest.get(/example\.com/, wrapHandler(handler)));
+  server.use(rest.get(/example\.com/, handler));
 
   await doFetch();
 
-  expect(handler).toHaveBeenCalledWith(
+  expect(requested).toHaveBeenCalledWith(
     expect.objectContaining({
       searchParamsPairs: expect.arrayContaining([
         {
@@ -66,11 +62,9 @@ test("pairs (for duplicate keys)", async () => {
     expect.anything()
   );
 
-  expect(handler).toHaveReturnedWith(
-    expect.objectContaining({
-      status: 200,
-    })
-  );
+  expect(await handler.mock.results[0].value).toMatchObject({
+    status: 200,
+  });
 });
 
 test("native", async () => {

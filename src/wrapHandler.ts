@@ -3,49 +3,54 @@ import { MockedRequest, ResponseResolver, rest } from "msw";
 type ContextType = Parameters<Parameters<typeof rest.get>[1]>[2];
 
 export const wrapHandler = (
-  handler: ResponseResolver<MockedRequest, ContextType, { a: 1 }>
-) => async (req: MockedRequest, res: any, ctx: ContextType) => {
-  const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
+  handler: ResponseResolver<MockedRequest, ContextType>
+) => {
+  const requested = jest.fn(handler);
 
-  const searchParamsPairs = searchParamsEntries?.map(([name, value]) => ({
-    [name]: value,
-  }));
+  const newHandler = async (req: MockedRequest, res: any, ctx: ContextType) => {
+    const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
 
-  const searchParams = searchParamsEntries
-    ? Object.fromEntries(searchParamsEntries)
-    : undefined;
+    const searchParamsPairs = searchParamsEntries?.map(([name, value]) => ({
+      [name]: value,
+    }));
 
-  const headersPairs: Record<string, string>[] = [];
-  req.headers?.forEach((value, name) => {
-    headersPairs.push({ [name]: value });
-  }, req.headers);
+    const searchParams = searchParamsEntries
+      ? Object.fromEntries(searchParamsEntries)
+      : undefined;
 
-  const headersMap = req.headers?.getAllHeaders();
+    const headersPairs: Record<string, string>[] = [];
+    req.headers?.forEach((value, name) => {
+      headersPairs.push({ [name]: value });
+    }, req.headers);
 
-  const handled = await handler(
-    {
-      ...req,
-      // @ts-ignore
-      headersMap,
-      headersPairs,
-      searchParams,
-      searchParamsPairs,
-    },
-    res,
-    ctx
-  );
+    const headersMap = req.headers?.getAllHeaders();
 
-  console.log("ADJ handled", handled);
+    const handled = await requested(
+      {
+        ...req,
+        // @ts-ignore
+        headersMap,
+        headersPairs,
+        searchParams,
+        searchParamsPairs,
+      },
+      res,
+      ctx
+    );
 
-  const newHandled = { ...handled };
+    const newHandled = { ...handled };
 
-  // @ts-ignore
-  if (newHandled.headers?.get("content-type")?.includes("json")) {
     // @ts-ignore
-    newHandled.bodyParsed = JSON.parse(newHandled.body);
-  }
+    if (newHandled.headers?.get("content-type")?.includes("json")) {
+      // @ts-ignore
+      newHandled.bodyParsed = JSON.parse(newHandled.body);
+    }
 
-  console.log("ADJ newHandled", newHandled);
+    return newHandled as typeof handled;
+  };
 
-  return newHandled as typeof handled;
+  return {
+    handler: jest.fn(newHandler),
+    requested,
+  };
 };
