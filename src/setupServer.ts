@@ -6,11 +6,11 @@ export const unmockedHandler = () => {
 };
 
 interface Options {
-  errorOnUnmocked?: boolean;
+  errorOnNonMocked?: boolean;
 }
 
 export const setupServer = (options: Options) => {
-  const handlers = options.errorOnUnmocked
+  const handlers = options.errorOnNonMocked
     ? [
         rest.get(/.*/, unmockedHandler),
         rest.post(/.*/, unmockedHandler),
