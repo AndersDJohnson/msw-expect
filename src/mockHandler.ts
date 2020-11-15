@@ -6,7 +6,7 @@ export const mockHandler = (
   handler: ResponseResolver<MockedRequest, ContextType>
 ) => {
   let requests: {}[] = [];
-  let responses: {}[] = [];
+  let responses: ({} | undefined)[] = [];
 
   const getRequest = (index: number = 0) => requests[index];
   const getResponse = (index: number = 0) => responses[index];
@@ -29,21 +29,19 @@ export const mockHandler = (
 
     const headersMap = req.headers?.getAllHeaders();
 
-    const handled = await handler(
-      {
-        ...req,
-        // @ts-ignore
-        headersMap,
-        headersPairs,
-        searchParams,
-        searchParamsPairs,
-      },
-      res,
-      ctx
-    );
+    requests.push({
+      ...req,
+      headers: headersMap,
+      headersPairs,
+      searchParams,
+      searchParamsPairs,
+    });
+
+    const handled = await handler(req, res, ctx);
 
     if (!handled) {
-      return;
+      responses.push(undefined);
+      return handled;
     }
 
     const newHandled: Record<string, any> = { ...handled };
@@ -59,14 +57,6 @@ export const mockHandler = (
         // silence
       }
     }
-
-    requests.push({
-      ...req,
-      headers: headersMap,
-      headersPairs,
-      searchParams,
-      searchParamsPairs,
-    });
 
     responses.push(newHandled);
 
