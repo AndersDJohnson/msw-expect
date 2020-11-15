@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { server } from "../../mswServer";
-import { doFetch } from "..";
+import { doFetch } from "../doFetch";
 import { mockHandler } from "../mockHandler";
 
 test("mocks", async () => {
