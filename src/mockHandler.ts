@@ -29,14 +29,6 @@ export const mockHandler = (
 
     const headersMap = req.headers?.getAllHeaders();
 
-    requests.push({
-      ...req,
-      headers: headersMap,
-      headersPairs,
-      searchParams,
-      searchParamsPairs,
-    });
-
     const handled = await handler(
       {
         ...req,
@@ -49,6 +41,10 @@ export const mockHandler = (
       res,
       ctx
     );
+
+    if (!handled) {
+      return;
+    }
 
     const newHandled: Record<string, any> = { ...handled };
 
@@ -63,6 +59,14 @@ export const mockHandler = (
         // silence
       }
     }
+
+    requests.push({
+      ...req,
+      headers: headersMap,
+      headersPairs,
+      searchParams,
+      searchParamsPairs,
+    });
 
     responses.push(newHandled);
 
