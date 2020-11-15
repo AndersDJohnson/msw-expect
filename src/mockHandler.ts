@@ -2,10 +2,12 @@ import { MockedRequest, ResponseResolver, rest } from "msw";
 
 type ContextType = Parameters<Parameters<typeof rest.get>[1]>[2];
 
-export const wrapHandler = (
+export const mockHandler = (
   handler: ResponseResolver<MockedRequest, ContextType>
 ) => {
-  const requested = jest.fn(handler);
+  let requests: {}[] = [];
+
+  const getRequest = (index: number = 0) => requests[index];
 
   const newHandler = async (req: MockedRequest, res: any, ctx: ContextType) => {
     const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
@@ -25,7 +27,15 @@ export const wrapHandler = (
 
     const headersMap = req.headers?.getAllHeaders();
 
-    const handled = await requested(
+    requests.push({
+      ...req,
+      headers: headersMap,
+      headersPairs,
+      searchParams,
+      searchParamsPairs,
+    });
+
+    const handled = await handler(
       {
         ...req,
         // @ts-ignore
@@ -49,8 +59,19 @@ export const wrapHandler = (
     return newHandled as typeof handled;
   };
 
-  return {
-    handler: jest.fn(newHandler),
-    requested,
+  const mocked = jest.fn(newHandler);
+
+  // @ts-ignore
+  mocked.getRequest = getRequest;
+
+  const getResponse = (index: number = 0) =>
+    mocked.mock.results[index].value as Promise<{}>;
+
+  // @ts-ignore
+  mocked.getResponse = getResponse;
+
+  return mocked as typeof mocked & {
+    getRequest: typeof getRequest;
+    getResponse: typeof getResponse;
   };
 };

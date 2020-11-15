@@ -1,10 +1,10 @@
 import { rest } from "msw";
 import { server } from "../../mswServer";
 import { doFetch } from "..";
-import { wrapHandler } from "../wrapHandler";
+import { mockHandler } from "../mockHandler";
 
 test("mocks", async () => {
-  const { handler, requested } = wrapHandler((_req, res, ctx) =>
+  const handler = mockHandler((_req, res, ctx) =>
     res(ctx.status(200), ctx.json({ message: "ok" }))
   );
 
@@ -12,20 +12,16 @@ test("mocks", async () => {
 
   await doFetch();
 
-  expect(requested).toHaveBeenCalledWith(
-    expect.objectContaining({
-      searchParams: {
-        myParam: "two",
-      },
-      headersMap: expect.objectContaining({
-        "x-my-header": "one",
-      }),
-    }),
-    expect.anything(),
-    expect.anything()
-  );
+  expect(handler.getRequest()).toMatchObject({
+    searchParams: {
+      myParam: "two",
+    },
+    headers: {
+      "x-my-header": "one",
+    },
+  });
 
-  expect(await handler.mock.results[0].value).toMatchObject({
+  expect(await handler.getResponse()).toMatchObject({
     status: 200,
     bodyParsed: {
       message: "ok",
@@ -34,7 +30,7 @@ test("mocks", async () => {
 });
 
 test("pairs (for duplicate keys)", async () => {
-  const { handler, requested } = wrapHandler((_req, res, ctx) =>
+  const handler = mockHandler((_req, res, ctx) =>
     res(ctx.status(200), ctx.json({ message: "ok" }))
   );
 
@@ -42,27 +38,23 @@ test("pairs (for duplicate keys)", async () => {
 
   await doFetch();
 
-  expect(requested).toHaveBeenCalledWith(
-    expect.objectContaining({
-      searchParamsPairs: expect.arrayContaining([
-        {
-          myParam: "one",
-        },
-        {
-          myParam: "two",
-        },
-      ]),
-      headersPairs: expect.arrayContaining([
-        {
-          "x-my-header": "one",
-        },
-      ]),
-    }),
-    expect.anything(),
-    expect.anything()
-  );
+  expect(handler.getRequest(0)).toMatchObject({
+    searchParamsPairs: expect.arrayContaining([
+      {
+        myParam: "one",
+      },
+      {
+        myParam: "two",
+      },
+    ]),
+    headersPairs: expect.arrayContaining([
+      {
+        "x-my-header": "one",
+      },
+    ]),
+  });
 
-  expect(await handler.mock.results[0].value).toMatchObject({
+  expect(await handler.getResponse(0)).toMatchObject({
     status: 200,
   });
 });
