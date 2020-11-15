@@ -67,24 +67,10 @@ export const mockHandler = (
     return handled;
   };
 
-  const mocked = jest.fn(newHandler);
+  newHandler.getRequest = getRequest;
+  newHandler.getResponse = getResponse;
+  newHandler.getRequests = getRequests;
+  newHandler.getResponses = getResponses;
 
-  // @ts-ignore
-  mocked.getRequest = getRequest;
-
-  // @ts-ignore
-  mocked.getResponse = getResponse;
-
-  // @ts-ignore
-  mocked.getRequests = getRequests;
-
-  // @ts-ignore
-  mocked.getResponses = getResponses;
-
-  return mocked as typeof mocked & {
-    getRequest: typeof getRequest;
-    getResponse: typeof getResponse;
-    getRequests: typeof getRequests;
-    getResponses: typeof getResponses;
-  };
+  return newHandler;
 };
