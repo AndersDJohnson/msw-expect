@@ -1,6 +1,6 @@
 import { setupServer } from "msw/node";
 
-export const jestSetupManual = (server: ReturnType<typeof setupServer>) => {
+export const setupManual = (server: ReturnType<typeof setupServer>) => {
   // Enable API mocking before tests.
   beforeAll(() => server.listen());
 
