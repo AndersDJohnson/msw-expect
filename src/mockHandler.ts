@@ -9,6 +9,9 @@ export const mockHandler = (
   let requests: {}[] = [];
   let responses: ({} | undefined)[] = [];
 
+  const getRequests = () => requests;
+  const getResponses = () => responses;
+
   const getRequest = (index: number = 0) => requests[index];
   const getResponse = (index: number = 0) => responses[index];
 
@@ -72,8 +75,16 @@ export const mockHandler = (
   // @ts-ignore
   mocked.getResponse = getResponse;
 
+  // @ts-ignore
+  mocked.getRequests = getRequests;
+
+  // @ts-ignore
+  mocked.getResponses = getResponses;
+
   return mocked as typeof mocked & {
     getRequest: typeof getRequest;
     getResponse: typeof getResponse;
+    getRequests: typeof getRequests;
+    getResponses: typeof getResponses;
   };
 };
