@@ -1,0 +1,10 @@
+{
+  "extends": "@andersdjohnson/tsconfig",
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "esnext"
+  }
+}

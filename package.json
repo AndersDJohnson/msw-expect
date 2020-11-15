@@ -1,0 +1,40 @@
+{
+  "name": "msw-assert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node .",
+    "build": "babel -x .ts,.tsx src --out-dir dist",
+    "build:watch": "npm run build -- --watch",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:types:watch": "npm run build:types -- --watch",
+    "test": "jest"
+  },
+  "keywords": [
+    "create-babel-typescript"
+  ],
+  "author": "Anders D. Johnson",
+  "license": "ISC",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@andersdjohnson/tsconfig": "^1.0.1",
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/node": "^7.12.6",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@types/jest": "^26.0.15",
+    "jest": "^26.6.3",
+    "msw": "^0.21.3",
+    "prettier": "^2.1.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@types/node-fetch": "^2.5.7",
+    "node-fetch": "^2.6.1"
+  }
+}
