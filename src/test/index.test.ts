@@ -3,7 +3,7 @@ import { doFetch, doPost } from "./doFetch";
 import { mockHandler, server } from "..";
 
 describe("mocks", () => {
-  test("assert request without response", async () => {
+  test("expect request without response", async () => {
     const handler = mockHandler();
 
     server.use(rest.get(/example\.com/, handler));
@@ -20,7 +20,7 @@ describe("mocks", () => {
     });
   });
 
-  test("assert request with response", async () => {
+  test("expect request with response", async () => {
     const handler = mockHandler((_req, res, ctx) =>
       res(ctx.status(200), ctx.json({ message: "ok" }))
     );
@@ -74,7 +74,7 @@ describe("mocks", () => {
     });
   });
 
-  test("assert post body", async () => {
+  test("expect post body", async () => {
     const handler = mockHandler();
 
     server.use(rest.post(/example\.com/, handler));

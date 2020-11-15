@@ -1,6 +1,6 @@
-# msw-assert
+# msw-expect
 
-MSW works great to mock responses in unit tests, but it's missing a way to assert on what requests are made like `nock` can. Well, now you can too with `msw-assert` and Jest!
+MSW works great to mock responses in unit tests, but it's missing a way to assert on what requests are made like `nock` can. Well, now you can too with `msw-expect` and Jest!
 
 Like `nock`, you can also make tests fail when any non-mocked request occurs to increase reliability and reduce side effects (see [Manual Server](#manual-server)).
 
@@ -10,7 +10,7 @@ For simplest setup with our built-in MSW server, in your `jest.config.js`:
 
 ```js
 module.exports = {
-  setupFilesAfterEnv: ["msw-assert/setup"],
+  setupFilesAfterEnv: ["msw-expect/setup"],
 };
 ```
 
@@ -18,7 +18,7 @@ In your test, you can wrap your MSW handlers with `mockHandler`:
 
 ```js
 import { rest } from "msw";
-import { mockHandler, server } from "msw-assert";
+import { mockHandler, server } from "msw-expect";
 
 import { myMswHandler } from "./myMswHandler";
 import { fetchFlavor } from "./fetchFlavor";
@@ -97,12 +97,12 @@ expect(handler.getRequests()).toHaveLength(3);
 
 ## Manual Server
 
-If you prefer to configure your server manually, you do not need to use `msw-assert/setup` in your Jest config.
+If you prefer to configure your server manually, you do not need to use `msw-expect/setup` in your Jest config.
 
 You can opt-in to throwing errors when any non-mocked request occurs:
 
 ```js
-import { setupServer } from "msw-assert";
+import { setupServer } from "msw-expect";
 
 export const server = setupServer({
   errorOnNonMocked: true, // default: false
