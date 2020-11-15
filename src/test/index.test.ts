@@ -1,9 +1,25 @@
 import { rest } from "msw";
-import { server } from "../../mswServer";
 import { doFetch } from "../doFetch";
-import { mockHandler } from "../mockHandler";
+import { mockHandler, server } from "..";
 
-test("mocks", async () => {
+test("assert request without response", async () => {
+  const handler = mockHandler();
+
+  server.use(rest.get(/example\.com/, handler));
+
+  await doFetch();
+
+  expect(handler.getRequest()).toMatchObject({
+    searchParams: {
+      myParam: "two",
+    },
+    headers: {
+      "x-my-header": "one",
+    },
+  });
+});
+
+test("assert request with response", async () => {
   const handler = mockHandler((_req, res, ctx) =>
     res(ctx.status(200), ctx.json({ message: "ok" }))
   );
@@ -30,9 +46,7 @@ test("mocks", async () => {
 });
 
 test("pairs (for duplicate keys)", async () => {
-  const handler = mockHandler((_req, res, ctx) =>
-    res(ctx.status(200), ctx.json({ message: "ok" }))
-  );
+  const handler = mockHandler();
 
   server.use(rest.get(/example\.com/, handler));
 
@@ -57,6 +71,12 @@ test("pairs (for duplicate keys)", async () => {
   expect(handler.getResponse(0)).toMatchObject({
     status: 200,
   });
+});
+
+test("fails on unmocked requests (if `errorOnUnmocked` is `true`)", async () => {
+  doFetch();
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
 });
 
 test("native", async () => {
