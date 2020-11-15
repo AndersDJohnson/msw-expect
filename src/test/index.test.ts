@@ -72,38 +72,3 @@ test("pairs (for duplicate keys)", async () => {
     status: 200,
   });
 });
-
-test("fails on unmocked requests (if `errorOnUnmocked` is `true`)", async () => {
-  doFetch();
-
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-});
-
-test("native", async () => {
-  const handler = jest.fn((_req, res, ctx) =>
-    res(ctx.status(200), ctx.json({ message: "ok" }))
-  );
-
-  server.use(rest.get(/example\.com/, handler));
-
-  await doFetch();
-
-  expect(handler).toHaveBeenCalledWith(
-    expect.objectContaining({
-      headers: {
-        map: expect.objectContaining({
-          "x-my-header": "one",
-        }),
-      },
-    }),
-    expect.anything(),
-    expect.anything()
-  );
-
-  expect(handler).toHaveReturnedWith(
-    expect.objectContaining({
-      status: 200,
-      body: '{"message":"ok"}',
-    })
-  );
-});
