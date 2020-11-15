@@ -1,6 +1,6 @@
 # msw-assert
 
-MSW works great in unit tests, but it's missing a way to assert on requests like `nock`. Well now you can with `msw-assert` and Jest!
+MSW works great to mock responses in unit tests, but it's missing a way to assert on what requests are made like `nock` can. Well, now you can too with `msw-assert` and Jest!
 
 Like `nock`, you can also make tests fail when any non-mocked request occurs to increase reliability and reduce side effects.
 
@@ -38,13 +38,26 @@ test("fetch flavor called with flavor param", async () => {
 });
 ```
 
+Or, if you don't need to mock the response, you don't need to provide a handler to wrap (the default just responds with 200):
+
+```js
+const handler = mockHandler();
+```
+
 You can also assert on request URL, body, headers, etc., with `getRequest()` as well as response status, body, etc., with `getResponse()`:
 
 ```js
+server.use(rest.post("https://api.example.com/flavors", handler));
+
+await postFlavor();
+
 expect(handler.getRequest()).toMatchObject({
-  url: "https://api.example.com/flavors?flavor=cherry",
+  url: "https://api.example.com/flavors",
   headers: {
     "x-api-key": "123",
+  },
+  body: {
+    flavor: "cherry",
   },
 });
 
@@ -56,12 +69,14 @@ expect(handler.getResponse()).toMatchObject({
 });
 ```
 
-To assert multiple calls, use `getRequest(index)` and `getResponse(index)`:
+You can use any of the [Jest assertion utilities](https://jestjs.io/docs/en/expect), including deeply nested `expect.stringMatching(regex)`, `expect.arrayContaining(array)`, etc.
+
+To assert multiple requests and responses, use `getRequest(index)` and `getResponse(index)`:
 
 ```js
-// Assert on the 3rd request (2nd index):
+// Assert on the 2nd request (1st index):
 
-expect(handler.getRequest(2)).toMatchObject({
+expect(handler.getRequest(1)).toMatchObject({
   searchParams: {
     flavor: "imaginary",
   },
