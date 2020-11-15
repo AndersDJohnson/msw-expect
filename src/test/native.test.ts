@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { server } from "..";
-import { doFetch } from "../doFetch";
+import { doFetch } from "./doFetch";
 
 test("native", async () => {
   const handler = jest.fn((_req, res, ctx) =>

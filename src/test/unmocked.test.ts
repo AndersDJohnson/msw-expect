@@ -1,4 +1,4 @@
-import { doFetch } from "../doFetch";
+import { doFetch } from "./doFetch";
 
 test.skip("fails on unmocked requests (if `errorOnUnmocked` is `true`)", async () => {
   doFetch();

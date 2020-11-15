@@ -1,5 +1,5 @@
 import { rest } from "msw";
-import { doFetch } from "../doFetch";
+import { doFetch } from "./doFetch";
 import { mockHandler, server } from "..";
 
 test("assert request without response", async () => {
