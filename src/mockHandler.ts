@@ -3,7 +3,8 @@ import { MockedRequest, ResponseResolver, rest } from "msw";
 type ContextType = Parameters<Parameters<typeof rest.get>[1]>[2];
 
 export const mockHandler = (
-  handler: ResponseResolver<MockedRequest, ContextType>
+  handler: ResponseResolver<MockedRequest, ContextType> = (_req, res, ctx) =>
+    res(ctx.status(200))
 ) => {
   let requests: {}[] = [];
   let responses: ({} | undefined)[] = [];
