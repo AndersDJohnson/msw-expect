@@ -6,8 +6,10 @@ export const mockHandler = (
   handler: ResponseResolver<MockedRequest, ContextType>
 ) => {
   let requests: {}[] = [];
+  let responses: {}[] = [];
 
   const getRequest = (index: number = 0) => requests[index];
+  const getResponse = (index: number = 0) => responses[index];
 
   const newHandler = async (req: MockedRequest, res: any, ctx: ContextType) => {
     const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
@@ -48,24 +50,29 @@ export const mockHandler = (
       ctx
     );
 
-    const newHandled = { ...handled };
+    const newHandled: Record<string, any> = { ...handled };
 
-    // @ts-ignore
-    if (newHandled.headers?.get("content-type")?.includes("json")) {
-      // @ts-ignore
-      newHandled.bodyParsed = JSON.parse(newHandled.body);
+    if (
+      newHandled.body &&
+      newHandled.headers?.get("content-type")?.includes("json")
+    ) {
+      try {
+        newHandled.rawBody = newHandled.body;
+        newHandled.body = JSON.parse(newHandled.body);
+      } catch {
+        // silence
+      }
     }
 
-    return newHandled as typeof handled;
+    responses.push(newHandled);
+
+    return handled;
   };
 
   const mocked = jest.fn(newHandler);
 
   // @ts-ignore
   mocked.getRequest = getRequest;
-
-  const getResponse = (index: number = 0) =>
-    mocked.mock.results[index].value as Promise<{}>;
 
   // @ts-ignore
   mocked.getResponse = getResponse;

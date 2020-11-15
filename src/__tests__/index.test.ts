@@ -21,9 +21,9 @@ test("mocks", async () => {
     },
   });
 
-  expect(await handler.getResponse()).toMatchObject({
+  expect(handler.getResponse()).toMatchObject({
     status: 200,
-    bodyParsed: {
+    body: {
       message: "ok",
     },
   });
@@ -54,7 +54,7 @@ test("pairs (for duplicate keys)", async () => {
     ]),
   });
 
-  expect(await handler.getResponse(0)).toMatchObject({
+  expect(handler.getResponse(0)).toMatchObject({
     status: 200,
   });
 });
