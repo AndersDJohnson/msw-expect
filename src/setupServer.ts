@@ -7,10 +7,11 @@ export const unmockedHandler = () => {
 
 interface Options {
   errorOnNonMocked?: boolean;
+  handlers?: Parameters<typeof mswSetupServer>;
 }
 
 export const setupServer = (options: Options) => {
-  const handlers = options.errorOnNonMocked
+  const defaultHandlers = options.errorOnNonMocked
     ? [
         rest.get(/.*/, unmockedHandler),
         rest.post(/.*/, unmockedHandler),
@@ -20,6 +21,8 @@ export const setupServer = (options: Options) => {
         rest.head(/.*/, unmockedHandler),
       ]
     : [];
+
+  const handlers = [...(options.handlers ?? []), ...defaultHandlers];
 
   return mswSetupServer(...handlers);
 };
