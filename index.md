@@ -6,6 +6,16 @@ Like `nock`, you can also make tests fail when any non-mocked request occurs to 
 
 Works with TypeScript!
 
+## Install
+
+[![npm add -D msw-expect (copy)](https://copyhaste.com/i?t=npm%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=npm%20add%20-D%20msw-expect "npm add -D msw-expect (copy)")
+
+or
+
+[![yarn add -D msw-expect (copy)](https://copyhaste.com/i?t=yarn%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=yarn%20add%20-D%20msw-expect "yarn add -D msw-expect (copy)")
+
+## Use
+
 For simplest setup with our built-in MSW server, in your `jest.config.js`:
 
 ```js
@@ -95,7 +105,7 @@ To assert count of requests, use `getRequests()`:
 expect(handler.getRequests()).toHaveLength(3);
 ```
 
-## Manual Server
+### Manual Server
 
 If you prefer to configure your server manually, you do not need to use `msw-expect/setup` in your Jest config.
 
