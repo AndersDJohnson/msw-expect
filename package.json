@@ -1,7 +1,7 @@
 {
   "name": "msw-expect",
   "version": "1.0.0",
-  "description": "",
+  "description": "Assert on mocked requests with MSW & Jest.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
