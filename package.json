@@ -19,7 +19,10 @@
   "author": "Anders D. Johnson",
   "license": "ISC",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "setup.js",
+    "dist"
+  ],
   "devDependencies": {
     "@andersdjohnson/tsconfig": "^1.0.1",
     "@babel/cli": "^7.12.1",
