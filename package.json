@@ -14,6 +14,8 @@
   "keywords": [
     "create-babel-typescript"
   ],
+  "homepage": "https://andersdjohnson.github.io/msw-expect/",
+  "repository": "AndersDJohnson/msw-expect",
   "author": "Anders D. Johnson",
   "license": "ISC",
   "types": "dist/index.d.ts",
