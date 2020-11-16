@@ -1,6 +1,3 @@
-import { setupServer } from "./setupServer";
+import { setupServer } from "msw/node";
 
-export const server = setupServer({
-  // errorOnNonMocked: true,
-  // handlers: []
-});
+export const server = setupServer();
