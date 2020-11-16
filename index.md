@@ -1,6 +1,6 @@
 # msw-expect
 
-MSW works great to mock responses in unit tests, but it's missing a way to assert on what requests are made like `nock` can. Well, now you can too with `msw-expect` and Jest!
+[MSW](https://mswjs.io/) works great to mock responses in unit tests, but it's missing a way to assert on what requests are made like [`nock`](https://github.com/nock/nock) can. Well, now you can too with `msw-expect` and Jest!
 
 Like `nock`, you can also make tests fail when any non-mocked request occurs to increase reliability and reduce side effects (see [Manual Server](#manual-server)).
 
