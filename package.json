@@ -21,7 +21,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "setup.js",
-    "dist"
+    "dist",
+    "!dist/test"
   ],
   "devDependencies": {
     "@andersdjohnson/tsconfig": "^1.0.1",
