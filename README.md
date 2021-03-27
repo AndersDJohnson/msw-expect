@@ -4,4 +4,4 @@
 
 And it works with TypeScript!
 
-[Read the docs](https://andersdjohnson.github.io/msw-expect/).
+📖 [Read the docs](https://andersdjohnson.github.io/msw-expect/)!
