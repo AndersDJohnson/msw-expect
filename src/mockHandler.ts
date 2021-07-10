@@ -1,11 +1,9 @@
-import { ResponseResolver } from "msw/lib/handlers/createHandler";
+import { MockedRequest, ResponseResolver, rest } from "msw";
 
-type ResponseResolverAsync = (
-  ...args: Parameters<ResponseResolver>
-) => Promise<ReturnType<ResponseResolver>>;
+type ContextType = Parameters<Parameters<typeof rest.get>[1]>[2];
 
 export const mockHandler = (
-  handler: ResponseResolverAsync = async (_req, res, ctx) =>
+  handler: ResponseResolver<MockedRequest, ContextType> = (_req, res, ctx) =>
     res(ctx.status(200))
 ) => {
   let requests: {}[] = [];
@@ -17,11 +15,8 @@ export const mockHandler = (
   const getRequest = (index: number = 0) => requests[index];
   const getResponse = (index: number = 0) => responses[index];
 
-  const newHandler: ResponseResolverAsync = async (req, res, ctx) => {
-    const searchParamsEntries = [
-      ...// @ts-expect-error msw's polyfill doesn't match the global spec types.
-      (req.url?.searchParams?.entries() ?? []),
-    ];
+  const newHandler = async (req: MockedRequest, res: any, ctx: ContextType) => {
+    const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
 
     const searchParamsPairs = searchParamsEntries?.map(([name, value]) => ({
       [name]: value,
@@ -37,13 +32,11 @@ export const mockHandler = (
     }, req.headers);
 
     const headersMap =
-      // For msw@^0.2.0:
-      // @ts-expect-error msw's polyfill doesn't match the global spec types.
+      // @ts-expect-error For msw@<0.28.0:
       typeof req.headers?.getAllHeaders === "function"
-        ? // @ts-expect-error msw's polyfill doesn't match the global spec types.
+        ? // @ts-expect-error For msw@<0.28.0:
           req.headers?.getAllHeaders()
-        : // For msw@^0.3.0:
-          // @ts-expect-error msw's polyfill doesn't match the global spec types.
+        : // For msw@>=0.28.0:
           req.headers?.all();
 
     requests.push({
@@ -80,13 +73,9 @@ export const mockHandler = (
     return handled;
   };
 
-  // @ts-expect-error These are overrides.
   newHandler.getRequest = getRequest;
-  // @ts-expect-error These are overrides.
   newHandler.getResponse = getResponse;
-  // @ts-expect-error These are overrides.
   newHandler.getRequests = getRequests;
-  // @ts-expect-error These are overrides.
   newHandler.getResponses = getResponses;
 
   return newHandler;
