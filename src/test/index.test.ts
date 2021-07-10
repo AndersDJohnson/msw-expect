@@ -1,12 +1,12 @@
 import { rest } from "msw";
 import { doFetch, doPost } from "./doFetch";
-import { mockHandler, server } from "..";
+import { DefaultResponseResolver, mockHandler, server } from "..";
 
 describe("mocks", () => {
   test("expect request without response", async () => {
     const handler = mockHandler();
 
-    server.use(rest.get(/example\.com/, handler));
+    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
 
     await doFetch();
 
@@ -25,7 +25,7 @@ describe("mocks", () => {
       res(ctx.status(200), ctx.json({ message: "ok" }))
     );
 
-    server.use(rest.get(/example\.com/, handler));
+    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
 
     await doFetch();
 
@@ -49,7 +49,7 @@ describe("mocks", () => {
   test("pairs (for duplicate keys)", async () => {
     const handler = mockHandler();
 
-    server.use(rest.get(/example\.com/, handler));
+    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
 
     await doFetch();
 
@@ -77,7 +77,7 @@ describe("mocks", () => {
   test("expect post body", async () => {
     const handler = mockHandler();
 
-    server.use(rest.post(/example\.com/, handler));
+    server.use(rest.post(/example\.com/, handler as DefaultResponseResolver));
 
     await doPost();
 

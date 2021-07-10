@@ -1,10 +1,9 @@
-import { MockedRequest, ResponseResolver, rest } from "msw";
+import { rest } from "msw";
 
-type ContextType = Parameters<Parameters<typeof rest.get>[1]>[2];
+export type DefaultResponseResolver = Parameters<typeof rest.post>[1];
 
 export const mockHandler = (
-  handler: ResponseResolver<MockedRequest, ContextType> = (_req, res, ctx) =>
-    res(ctx.status(200))
+  handler: DefaultResponseResolver = (_req, res, ctx) => res(ctx.status(200))
 ) => {
   let requests: {}[] = [];
   let responses: ({} | undefined)[] = [];
@@ -15,7 +14,11 @@ export const mockHandler = (
   const getRequest = (index: number = 0) => requests[index];
   const getResponse = (index: number = 0) => responses[index];
 
-  const newHandler = async (req: MockedRequest, res: any, ctx: ContextType) => {
+  const newHandler = async (
+    req: Parameters<DefaultResponseResolver>[0],
+    res: Parameters<DefaultResponseResolver>[1],
+    ctx: Parameters<DefaultResponseResolver>[2]
+  ) => {
     const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
 
     const searchParamsPairs = searchParamsEntries?.map(([name, value]) => ({

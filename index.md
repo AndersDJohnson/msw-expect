@@ -28,7 +28,7 @@ In your test, you can wrap your MSW handlers with `mockHandler`:
 
 ```js
 import { rest } from "msw";
-import { mockHandler, server } from "msw-expect";
+import { DefaultResponseResolver, mockHandler, server } from "msw-expect";
 
 import { myMswHandler } from "./myMswHandler";
 import { fetchFlavor } from "./fetchFlavor";
@@ -36,7 +36,7 @@ import { fetchFlavor } from "./fetchFlavor";
 test("fetch flavor called with flavor param", async () => {
   const handler = mockHandler(myMswHandler);
 
-  server.use(rest.get("https://api.example.com/flavors", handler));
+  server.use(rest.get("https://api.example.com/flavors", handler as DefaultResponseResolver));
 
   await fetchFlavor();
 
@@ -57,7 +57,7 @@ const handler = mockHandler();
 You can also assert on request URL, body, headers, etc., with `getRequest()` as well as response status, body, etc., with `getResponse()`:
 
 ```js
-server.use(rest.post("https://api.example.com/flavors", handler));
+server.use(rest.post("https://api.example.com/flavors", handler as DefaultResponseResolver));
 
 await postFlavor();
 
