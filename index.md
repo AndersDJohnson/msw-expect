@@ -26,7 +26,7 @@ module.exports = {
 
 In your test, you can wrap your MSW handlers with `mockHandler`:
 
-```js
+```ts
 import { rest } from "msw";
 import { mockHandler, server } from "msw-expect";
 
@@ -36,7 +36,13 @@ import { fetchFlavor } from "./fetchFlavor";
 test("fetch flavor called with flavor param", async () => {
   const handler = mockHandler(myMswHandler);
 
-  server.use(rest.get("https://api.example.com/flavors", handler as typeof myMswHandler));
+  server.use(
+    rest.get(
+      "https://api.example.com/flavors",
+      // Only use the "as..." part if you're using TypeScript.
+      handler as typeof myMswHandler
+    )
+  );
 
   await fetchFlavor();
 
@@ -50,14 +56,31 @@ test("fetch flavor called with flavor param", async () => {
 
 Or, if you don't need to mock the response, you don't need to provide a handler to wrap (the default just responds with 200):
 
-```js
+```ts
+// Only import `DefaultResponseResolver` if you're using TypeScript.
+import { DefaultResponseResolver } from "msw-expect";
+
 const handler = mockHandler();
+
+server.use(
+  rest.post(
+    "https://api.example.com/flavors",
+    // Only use the "as..." part if you're using TypeScript.
+    handler as DefaultResponseResolver
+  )
+);
 ```
 
 You can also assert on request URL, body, headers, etc., with `getRequest()` as well as response status, body, etc., with `getResponse()`:
 
-```js
-server.use(rest.post("https://api.example.com/flavors", handler as typeof myMswHandler));
+```ts
+server.use(
+  rest.post(
+    "https://api.example.com/flavors",
+    // Only use the "as..." part if you're using TypeScript.
+    handler as typeof myMswHandler
+  )
+);
 
 await postFlavor();
 
@@ -83,7 +106,7 @@ You can use any of the [Jest assertion utilities](https://jestjs.io/docs/en/expe
 
 To assert multiple requests and responses, use `getRequest(index)` and `getResponse(index)`:
 
-```js
+```ts
 // Assert on the 2nd request (1st index):
 
 expect(handler.getRequest(1)).toMatchObject({
@@ -101,7 +124,7 @@ expect(handler.getResponse(2)).toMatchObject({
 
 To assert count of requests, use `getRequests()`:
 
-```js
+```ts
 expect(handler.getRequests()).toHaveLength(3);
 ```
 
@@ -111,7 +134,7 @@ If you prefer to configure your server manually, you do not need to use `msw-exp
 
 Instead, you can configure a vanilla MSW server yourself:
 
-```js
+```ts
 import { setupServer } from "msw/node";
 
 export const server = setupServer();
