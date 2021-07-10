@@ -6,11 +6,13 @@ And it works with TypeScript!
 
 ## Install
 
-[![npm add -D msw-expect (copy)](https://copyhaste.com/i?t=npm%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=npm%20add%20-D%20msw-expect "npm add -D msw-expect (copy)")
+You'll want to install `msw` as well, if you haven't already.
+
+[![npm add -D msw-expect (copy)](https://copyhaste.com/i?t=npm%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=npm%20add%20-D%20msw-expect%20msw "npm add -D msw-expect msw (copy)")
 
 or
 
-[![yarn add -D msw-expect (copy)](https://copyhaste.com/i?t=yarn%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=yarn%20add%20-D%20msw-expect "yarn add -D msw-expect (copy)")
+[![yarn add -D msw-expect (copy)](https://copyhaste.com/i?t=yarn%20add%20-D%20msw-expect)](https://copyhaste.com/c?t=yarn%20add%20-D%20msw-expect%20msw "yarn add -D msw-expect msw (copy)")
 
 ## Use
 
