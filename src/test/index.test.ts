@@ -21,11 +21,12 @@ describe("mocks", () => {
   });
 
   test("expect request with response", async () => {
-    const handler = mockHandler((_req, res, ctx) =>
-      res(ctx.status(200), ctx.json({ message: "ok" }))
-    );
+    const realHandler: DefaultResponseResolver = (_req, res, ctx) =>
+      res(ctx.status(200), ctx.json({ message: "ok" }));
 
-    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
+    const handler = mockHandler(realHandler);
+
+    server.use(rest.get(/example\.com/, handler as typeof realHandler));
 
     await doFetch();
 
