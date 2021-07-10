@@ -31,7 +31,13 @@ export const mockHandler = (
       headersPairs.push({ [name]: value });
     }, req.headers);
 
-    const headersMap = req.headers?.getAllHeaders();
+    const headersMap =
+      // @ts-expect-error For msw@<0.28.0:
+      typeof req.headers?.getAllHeaders === "function"
+        ? // @ts-expect-error For msw@<0.28.0:
+          req.headers?.getAllHeaders()
+        : // For msw@>=0.28.0:
+          req.headers?.all();
 
     requests.push({
       ...req,

@@ -13,20 +13,22 @@ test("native", async () => {
 
   expect(handler).toHaveBeenCalledWith(
     expect.objectContaining({
-      headers: {
-        map: expect.objectContaining({
+      headers: expect.objectContaining({
+        _headers: expect.objectContaining({
           "x-my-header": "one",
         }),
-      },
+      }),
     }),
     expect.anything(),
     expect.anything()
   );
 
   expect(handler).toHaveReturnedWith(
-    expect.objectContaining({
-      status: 200,
-      body: '{"message":"ok"}',
-    })
+    expect(handler.mock.results[0].value).resolves.toEqual(
+      expect.objectContaining({
+        status: 200,
+        body: '{"message":"ok"}',
+      })
+    )
   );
 });
