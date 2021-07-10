@@ -1,11 +1,13 @@
 import { rest } from "msw";
 import { server } from "..";
+import { DefaultResponseResolver } from "../mockHandler";
 import { doFetch } from "./doFetch";
 
 test("native", async () => {
-  const handler = jest.fn((_req, res, ctx) =>
-    res(ctx.status(200), ctx.json({ message: "ok" }))
-  );
+  const realHandler: DefaultResponseResolver = (_req, res, ctx) =>
+    res(ctx.status(200), ctx.json({ message: "ok" }));
+
+  const handler = jest.fn(realHandler);
 
   server.use(rest.get(/example\.com/, handler));
 
