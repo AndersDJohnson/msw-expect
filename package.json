@@ -36,7 +36,7 @@
     "@types/jest": "^26.0.15",
     "@types/node-fetch": "^2.5.7",
     "jest": "^26.6.3",
-    "msw": "^0.3.0",
+    "msw": "^0.31.0",
     "node-fetch": "^2.6.1",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
@@ -47,6 +47,6 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7.12.5",
-    "msw": "^0.21.3-^0.3.0"
+    "msw": "^0.21.3"
   }
 }
