@@ -46,7 +46,6 @@
     "@babel/runtime": "^7.12.5"
   },
   "peerDependencies": {
-    "@babel/runtime": "^7.12.5",
     "msw": "^0.21.3"
   }
 }
