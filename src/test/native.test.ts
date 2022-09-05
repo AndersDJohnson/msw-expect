@@ -4,8 +4,9 @@ import { DefaultResponseResolver } from "../mockHandler";
 import { doFetch } from "./doFetch";
 
 test("native", async () => {
-  const realHandler: DefaultResponseResolver = (_req, res, ctx) =>
-    res(ctx.status(200), ctx.json({ message: "ok" }));
+  const realHandler: DefaultResponseResolver = (_req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ message: "ok" }));
+  };
 
   const handler = jest.fn(realHandler);
 
@@ -13,24 +14,17 @@ test("native", async () => {
 
   await doFetch();
 
-  expect(handler).toHaveBeenCalledWith(
+  expect(handler.mock.calls[0][0].headers.all()).toEqual(
     expect.objectContaining({
-      headers: expect.objectContaining({
-        _headers: expect.objectContaining({
-          "x-my-header": "one",
-        }),
-      }),
-    }),
-    expect.anything(),
-    expect.anything()
+      "x-my-header": "one",
+    })
   );
 
-  expect(handler).toHaveReturnedWith(
-    expect(handler.mock.results[0].value).resolves.toEqual(
-      expect.objectContaining({
-        status: 200,
-        body: '{"message":"ok"}',
-      })
-    )
+  expect(handler.mock.results[0].value).resolves.toEqual(
+    expect.objectContaining({
+      status: 200,
+      body: '{"message":"ok"}',
+    })
   );
 });
+
