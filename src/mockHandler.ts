@@ -42,8 +42,14 @@ export const mockHandler = (
         : // For msw@>=0.28.0:
           req.headers?.all();
 
+    let body = await req.text();
+    try {
+      body = JSON.parse(body);
+    } catch {};
+
     requests.push({
       ...req,
+      body,
       headers: headersMap,
       headersPairs,
       searchParams,
