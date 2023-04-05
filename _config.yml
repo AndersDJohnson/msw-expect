@@ -7,5 +7,3 @@ andersdjohnson:
   npm_name: msw-expect
   # Should install as dev dependency.
   npm_dev: true
-  # Show a badge for Travis CI
-  travis: true
