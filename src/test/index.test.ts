@@ -88,4 +88,17 @@ describe("mocks", () => {
       },
     });
   });
+
+  test("it should be possible to reset requests/responses", async () => {
+    const handler = mockHandler();
+
+    server.use(rest.post(/example\.com/, handler as DefaultResponseResolver));
+    await doPost();
+    await doPost();
+    expect(handler.getRequests()).toHaveLength(2);
+    expect(handler.getResponses()).toHaveLength(2);
+    handler.reset();
+    expect(handler.getRequests()).toHaveLength(0);
+    expect(handler.getResponses()).toHaveLength(0);
+  })
 });

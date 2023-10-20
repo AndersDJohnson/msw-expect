@@ -14,6 +14,13 @@ export const mockHandler = (
   const getRequest = (index: number = 0) => requests[index];
   const getResponse = (index: number = 0) => responses[index];
 
+  const resetRequests = () => requests = [];
+  const resetResponses = () => responses = [];
+  const reset = () => {
+    resetRequests();
+    resetResponses();
+  }
+
   const newHandler = async (
     req: Parameters<DefaultResponseResolver>[0],
     res: Parameters<DefaultResponseResolver>[1],
@@ -45,7 +52,7 @@ export const mockHandler = (
     let body = await req.text();
     try {
       body = JSON.parse(body);
-    } catch {};
+    } catch {}
 
     requests.push({
       ...req,
@@ -86,6 +93,7 @@ export const mockHandler = (
   newHandler.getResponse = getResponse;
   newHandler.getRequests = getRequests;
   newHandler.getResponses = getResponses;
+  newHandler.reset = reset;
 
   return newHandler;
 };
