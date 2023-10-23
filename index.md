@@ -128,6 +128,18 @@ To assert count of requests, use `getRequests()`:
 expect(handler.getRequests()).toHaveLength(3);
 ```
 
+### Reset request/response arrays between tests
+
+If you want to clear the request/response arrays between tests, use the `reset` method:
+
+```ts
+describe('test', () => {
+    beforeEach(() => {
+        handler.reset()
+    });
+})
+```
+
 ### Manual Server
 
 If you prefer to configure your server manually, you do not need to use `msw-expect/setup` in your Jest config.
@@ -139,3 +151,8 @@ import { setupServer } from "msw/node";
 
 export const server = setupServer();
 ```
+
+### Contributors
+
+- [Anders D. Johnson](https:/github.com/AndersDJohnson)
+- [Ron Derksen](https:/github.com/ronderksen)
