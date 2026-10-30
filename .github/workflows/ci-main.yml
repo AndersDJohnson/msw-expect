@@ -1,4 +1,4 @@
-name: pull_request-main
+name: ci-main
 
 on:
   push:
