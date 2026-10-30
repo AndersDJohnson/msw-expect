@@ -7,4 +7,5 @@ andersdjohnson:
   npm_name: msw-expect
   # Should install as dev dependency.
   npm_dev: true
-
+  # Show a badge for a GitHub Actions workflow
+  workflow: "ci-main"
