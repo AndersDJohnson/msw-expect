@@ -16,9 +16,29 @@ For simplest setup with our built-in MSW server, in your `jest.config.js`:
 
 ```js
 module.exports = {
-  setupFilesAfterEnv: ["msw-expect/setup"],
+  setupFilesAfterEnv: ["msw-expect/setup-jest"],
 };
 ```
+
+(`msw-expect/setup` remains as an alias of `msw-expect/setup-jest`.)
+
+#### Node.js test runner
+
+To use the native [`node:test`](https://nodejs.org/api/test.html) module instead of Jest:
+
+```sh
+node --test --import msw-expect/setup-node-test
+```
+
+See https://nodejs.org/api/test.html for more info.
+
+With Node 24+, you can instead use global setup/teardown via `--test-global-setup`:
+
+```sh
+node --test --test-global-setup=msw-expect/setup-node-test-global
+```
+
+This exports `globalSetup` and `globalTeardown`, which start and stop the MSW server.
 
 In your test, you can wrap your MSW handlers with `mockHandler`:
 

@@ -1,1 +1,1 @@
-require('./dist/setup');
+require('./dist/setup-jest');
