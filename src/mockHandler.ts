@@ -1,9 +1,9 @@
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 
-export type DefaultResponseResolver = Parameters<typeof rest.post>[1];
+export type DefaultResponseResolver = Parameters<typeof http.post>[1];
 
 export const mockHandler = (
-  handler: DefaultResponseResolver = (_req, res, ctx) => res(ctx.status(200))
+  handler: DefaultResponseResolver = () => new HttpResponse(null, { status: 200 })
 ) => {
   let requests: {}[] = [];
   let responses: ({} | undefined)[] = [];
@@ -21,41 +21,42 @@ export const mockHandler = (
     resetResponses();
   }
 
-  const newHandler = async (
-    req: Parameters<DefaultResponseResolver>[0],
-    res: Parameters<DefaultResponseResolver>[1],
-    ctx: Parameters<DefaultResponseResolver>[2]
-  ) => {
-    const searchParamsEntries = [...(req.url?.searchParams?.entries() ?? [])];
+  type MockResponseResolver = DefaultResponseResolver & {
+    getRequest: typeof getRequest;
+    getResponse: typeof getResponse;
+    getRequests: typeof getRequests;
+    getResponses: typeof getResponses;
+    reset: typeof reset;
+  };
 
-    const searchParamsPairs = searchParamsEntries?.map(([name, value]) => ({
+  const newHandler = (async (info: Parameters<DefaultResponseResolver>[0]) => {
+    const request = info.request;
+    const searchParamsEntries = [
+      ...new URL(request.url).searchParams.entries(),
+    ];
+
+    const searchParamsPairs = searchParamsEntries.map(([name, value]) => ({
       [name]: value,
     }));
 
-    const searchParams = searchParamsEntries
-      ? Object.fromEntries(searchParamsEntries)
-      : undefined;
+    const searchParams = Object.fromEntries(searchParamsEntries);
 
     const headersPairs: Record<string, string>[] = [];
-    req.headers?.forEach((value, name) => {
+    const headersMap: Record<string, string> = {};
+    request.headers.forEach((value, name) => {
       headersPairs.push({ [name]: value });
-    }, req.headers);
+      headersMap[name] = value;
+    });
 
-    const headersMap =
-      // @ts-expect-error For msw@<0.28.0:
-      typeof req.headers?.getAllHeaders === "function"
-        ? // @ts-expect-error For msw@<0.28.0:
-          req.headers?.getAllHeaders()
-        : // For msw@>=0.28.0:
-          req.headers?.all();
-
-    let body = await req.text();
+    let body: any = await request.clone().text();
     try {
       body = JSON.parse(body);
     } catch {}
 
     requests.push({
-      ...req,
+      ...request,
+      url: request.url,
+      method: request.method,
       body,
       headers: headersMap,
       headersPairs,
@@ -63,14 +64,21 @@ export const mockHandler = (
       searchParamsPairs,
     });
 
-    const handled = await handler(req, res, ctx);
+    const handled = await handler(info);
 
-    if (!handled) {
+    if (!(handled instanceof Response)) {
       responses.push(undefined);
       return handled;
     }
 
-    const newHandled: Record<string, any> = { ...handled };
+    const responseBody = await handled.clone().text();
+    const newHandled: Record<string, any> = {
+      ...handled,
+      status: handled.status,
+      statusText: handled.statusText,
+      headers: handled.headers,
+      body: responseBody,
+    };
 
     if (
       newHandled.body &&
@@ -87,7 +95,7 @@ export const mockHandler = (
     responses.push(newHandled);
 
     return handled;
-  };
+  }) as MockResponseResolver;
 
   newHandler.getRequest = getRequest;
   newHandler.getResponse = getResponse;

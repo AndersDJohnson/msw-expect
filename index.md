@@ -23,7 +23,7 @@ module.exports = {
 In your test, you can wrap your MSW handlers with `mockHandler`:
 
 ```ts
-import { rest } from "msw";
+import { http } from "msw";
 import { mockHandler, server } from "msw-expect";
 
 import { myMswHandler } from "./myMswHandler";
@@ -33,7 +33,7 @@ test("fetch flavor called with flavor param", async () => {
   const handler = mockHandler(myMswHandler);
 
   server.use(
-    rest.get(
+    http.get(
       "https://api.example.com/flavors",
       // Only use the "as..." part if you're using TypeScript.
       handler as typeof myMswHandler
@@ -59,7 +59,7 @@ import { DefaultResponseResolver } from "msw-expect";
 const handler = mockHandler();
 
 server.use(
-  rest.post(
+  http.post(
     "https://api.example.com/flavors",
     // Only use the "as..." part if you're using TypeScript.
     handler as DefaultResponseResolver
@@ -71,7 +71,7 @@ You can also assert on request URL, body, headers, etc., with `getRequest()` as 
 
 ```ts
 server.use(
-  rest.post(
+  http.post(
     "https://api.example.com/flavors",
     // Only use the "as..." part if you're using TypeScript.
     handler as typeof myMswHandler
