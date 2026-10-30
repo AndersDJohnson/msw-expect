@@ -1,4 +1,5 @@
-import { rest } from "msw";
+import { describe, expect, test } from "@jest/globals";
+import { http, HttpResponse } from "msw";
 import { doFetch, doPost } from "./doFetch";
 import { DefaultResponseResolver, mockHandler, server } from "..";
 
@@ -6,7 +7,7 @@ describe("mocks", () => {
   test("expect request without response", async () => {
     const handler = mockHandler();
 
-    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
+    server.use(http.get(/example\.com/, handler as DefaultResponseResolver));
 
     await doFetch();
 
@@ -21,12 +22,12 @@ describe("mocks", () => {
   });
 
   test("expect request with response", async () => {
-    const realHandler: DefaultResponseResolver = (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json({ message: "ok" }));
+    const realHandler: DefaultResponseResolver = () =>
+      HttpResponse.json({ message: "ok" });
 
     const handler = mockHandler(realHandler);
 
-    server.use(rest.get(/example\.com/, handler as typeof realHandler));
+    server.use(http.get(/example\.com/, handler as typeof realHandler));
 
     await doFetch();
 
@@ -50,7 +51,7 @@ describe("mocks", () => {
   test("pairs (for duplicate keys)", async () => {
     const handler = mockHandler();
 
-    server.use(rest.get(/example\.com/, handler as DefaultResponseResolver));
+    server.use(http.get(/example\.com/, handler as DefaultResponseResolver));
 
     await doFetch();
 
@@ -78,7 +79,7 @@ describe("mocks", () => {
   test("expect post body", async () => {
     const handler = mockHandler();
 
-    server.use(rest.post(/example\.com/, handler as DefaultResponseResolver));
+    server.use(http.post(/example\.com/, handler as DefaultResponseResolver));
 
     await doPost();
 
@@ -92,7 +93,7 @@ describe("mocks", () => {
   test("it should be possible to reset requests/responses", async () => {
     const handler = mockHandler();
 
-    server.use(rest.post(/example\.com/, handler as DefaultResponseResolver));
+    server.use(http.post(/example\.com/, handler as DefaultResponseResolver));
     await doPost();
     await doPost();
     expect(handler.getRequests()).toHaveLength(2);

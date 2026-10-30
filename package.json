@@ -10,7 +10,7 @@
     "build:watch": "npm run build -- --watch",
     "build:types": "tsc --emitDeclarationOnly",
     "build:types:watch": "npm run build:types -- --watch",
-    "test": "jest"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "keywords": [
     "create-babel-typescript"
@@ -34,19 +34,19 @@
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^30.0.0",
     "@types/node-fetch": "^2.5.7",
-    "jest": "^26.6.3",
-    "msw": "^1.2.1",
+    "jest": "^30.5.2",
+    "msw": "^3.0.3",
     "node-fetch": "^2.6.1",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
-    "typescript": "4.6"
+    "typescript": "5.9"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5"
   },
   "peerDependencies": {
-    "msw": ">=0.44.0 <2"
+    "msw": ">=2.0.0 <4"
   }
 }

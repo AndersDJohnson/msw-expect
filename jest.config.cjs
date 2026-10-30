@@ -1,8 +1,5 @@
-import type { Config } from "@jest/types";
-
-const config: Config.InitialOptions = {
+module.exports = {
   setupFilesAfterEnv: ["<rootDir>/src/setup.ts"],
   testPathIgnorePatterns: ["/dist/", "/node_modules/"],
+  extensionsToTreatAsEsm: [".ts"],
 };
-
-export default config;
